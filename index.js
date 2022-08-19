@@ -13,8 +13,8 @@
  * @typedef {import('mdast-util-from-markdown/lib').Parent & InlineType} Inline
  */
 
-import { containerPhrasing } from 'mdast-util-to-markdown/lib/util/container-phrasing.js'
-import { track } from 'mdast-util-to-markdown/lib/util/track.js'
+import {containerPhrasing} from 'mdast-util-to-markdown/lib/util/container-phrasing.js'
+import {track} from 'mdast-util-to-markdown/lib/util/track.js'
 
 /**
  * Generate mdast node insertion extension for tag
@@ -23,21 +23,24 @@ import { track } from 'mdast-util-to-markdown/lib/util/track.js'
  */
 export function inlineFactoryFromMarkdown(cfg) {
   /** @type {FromMarkdownExtension} */
-  const tmp = {
+  const temporary = {
     canContainEols: [cfg.mdastNode],
     enter: {},
     exit: {}
-  };
+  }
   // @ts-ignore - FIXME: How to JSDoc cast as we know it is not undefined
-  tmp.enter[cfg.mdastNode] = enterInline;
+  temporary.enter[cfg.mdastNode] = enterInline
   // @ts-ignore - FIXME: How to JSDoc cast as we know it is not undefined
-  tmp.exit[cfg.mdastNode] = exitInline;
-  return tmp;
+  temporary.exit[cfg.mdastNode] = exitInline
+  return temporary
 
   /** @type {FromMarkdownHandle} */
   function enterInline(token) {
     // @ts-ignore - FIXME: How to JSDoc extend typedef
-    this.enter({ type: cfg.mdastNode, children: [], data: { hName: cfg.htmlNode } }, token)
+    this.enter(
+      {type: cfg.mdastNode, children: [], data: {hName: cfg.htmlNode}},
+      token
+    )
   }
 
   /** @type {FromMarkdownHandle} */
@@ -49,18 +52,18 @@ export function inlineFactoryFromMarkdown(cfg) {
 /**
  * Generate mdast node serialization extension for tag
  * @param {{mdastNode: string, markdownSymbol: string}} cfg
- * @returns {ToMarkdownExtension} 
+ * @returns {ToMarkdownExtension}
  */
 export function inlineFactoryToMarkdown(cfg) {
-  const tmp = {
-    unsafe: [{ character: cfg.markdownSymbol, inConstruct: 'phrasing' }],
+  const temporary = {
+    unsafe: [{character: cfg.markdownSymbol, inConstruct: 'phrasing'}],
     handlers: {}
-  };
+  }
   // @ts-ignore - FIXME: How to JSDoc cast as we know it is not undefined
-  tmp.handlers[cfg.mdastNode] = handleInline;
+  temporary.handlers[cfg.mdastNode] = handleInline
   // @ts-ignore - FIXME: How to JSDoc cast as we know it is not undefined
-  tmp.handlers[cfg.mdastNode]['peek'] = peekInline;
-  return tmp;
+  temporary.handlers[cfg.mdastNode].peek = peekInline
+  return temporary
 
   /**
    * @type {ToMarkdownHandle}

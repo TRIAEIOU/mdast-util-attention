@@ -2,18 +2,21 @@ import test from 'tape'
 import {fromMarkdown} from 'mdast-util-from-markdown'
 import {toMarkdown} from 'mdast-util-to-markdown'
 import {removePosition} from 'unist-util-remove-position'
-import {gfmStrikethrough} from 'micromark-extension-gfm-strikethrough'
-import {
-  gfmStrikethroughFromMarkdown,
-  gfmStrikethroughToMarkdown
-} from './index.js'
+import {inlineFactory} from 'micromark-extension-inline-factory'
+import {inlineFactoryFromMarkdown, inlineFactoryToMarkdown} from './index.js'
+
+const strikethrough = {
+  markdownSymbol: '~~',
+  mdastNode: 'strikethrough',
+  htmlNode: 'del'
+}
 
 test('markdown -> mdast', (t) => {
   t.deepEqual(
     removePosition(
       fromMarkdown('a ~~b~~ c.', {
-        extensions: [gfmStrikethrough()],
-        mdastExtensions: [gfmStrikethroughFromMarkdown]
+        extensions: [inlineFactory(strikethrough)],
+        mdastExtensions: [inlineFactoryFromMarkdown(strikethrough)]
       }),
       true
     ),
@@ -36,8 +39,8 @@ test('markdown -> mdast', (t) => {
   t.deepEqual(
     removePosition(
       fromMarkdown('a ~~b\nc~~ d.', {
-        extensions: [gfmStrikethrough()],
-        mdastExtensions: [gfmStrikethroughFromMarkdown]
+        extensions: [inlineFactory(strikethrough)],
+        mdastExtensions: [inlineFactoryFromMarkdown(strikethrough)]
       }),
       true
     ),
@@ -71,7 +74,7 @@ test('mdast -> markdown', (t) => {
           {type: 'text', value: ' c.'}
         ]
       },
-      {extensions: [gfmStrikethroughToMarkdown]}
+      {extensions: [inlineFactoryToMarkdown(strikethrough)]}
     ),
     'a ~~b~~ c.\n',
     'should serialize strikethrough'
@@ -87,7 +90,7 @@ test('mdast -> markdown', (t) => {
           {type: 'text', value: ' d.'}
         ]
       },
-      {extensions: [gfmStrikethroughToMarkdown]}
+      {extensions: [inlineFactoryToMarkdown(strikethrough)]}
     ),
     'a ~~b\nc~~ d.\n',
     'should serialize strikethrough w/ eols'
