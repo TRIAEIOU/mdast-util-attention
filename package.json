@@ -1,7 +1,7 @@
 {
-  "name": "mdast-util-gfm-strikethrough",
+  "name": "mdast-util-inline-factory",
   "version": "1.0.1",
-  "description": "mdast extension to parse and serialize GFM strikethrough",
+  "description": "mdast-util-gfm-strikethrough fork to factory for generating arbitrary inline syntax",
   "license": "MIT",
   "keywords": [
     "unist",
@@ -19,15 +19,15 @@
     "deletion",
     "gfm"
   ],
-  "repository": "syntax-tree/mdast-util-gfm-strikethrough",
-  "bugs": "https://github.com/syntax-tree/mdast-util-gfm-strikethrough/issues",
+  "repository": "TRIAEIOU/mdast-util-inline-factory",
   "funding": {
     "type": "opencollective",
     "url": "https://opencollective.com/unified"
   },
   "author": "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)",
   "contributors": [
-    "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)"
+    "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)",
+    "https://github.com/TRIAEIOU"
   ],
   "sideEffects": false,
   "type": "module",
@@ -45,7 +45,6 @@
     "@types/tape": "^4.0.0",
     "c8": "^7.0.0",
     "mdast-util-from-markdown": "^1.0.0",
-    "micromark-extension-gfm-strikethrough": "^1.0.0",
     "prettier": "^2.0.0",
     "remark-cli": "^10.0.0",
     "remark-preset-wooorm": "^9.0.0",

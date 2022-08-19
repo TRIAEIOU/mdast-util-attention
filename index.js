@@ -6,53 +6,82 @@
  * @typedef {import('mdast-util-to-markdown').Handle} ToMarkdownHandle
  */
 
-import {containerPhrasing} from 'mdast-util-to-markdown/lib/util/container-phrasing.js'
-import {track} from 'mdast-util-to-markdown/lib/util/track.js'
+/**
+ * @typedef {Object} InlineType
+ * @property {String} type
+ * @property {import('mdast').PhrasingContent[]} children
+ * @typedef {import('mdast-util-from-markdown/lib').Parent & InlineType} Inline
+ */
 
-/** @type {FromMarkdownExtension} */
-export const gfmStrikethroughFromMarkdown = {
-  canContainEols: ['delete'],
-  enter: {strikethrough: enterStrikethrough},
-  exit: {strikethrough: exitStrikethrough}
-}
+import { containerPhrasing } from 'mdast-util-to-markdown/lib/util/container-phrasing.js'
+import { track } from 'mdast-util-to-markdown/lib/util/track.js'
 
-/** @type {ToMarkdownExtension} */
-export const gfmStrikethroughToMarkdown = {
-  unsafe: [{character: '~', inConstruct: 'phrasing'}],
-  handlers: {delete: handleDelete}
-}
+/**
+ * Generate mdast node insertion extension for tag
+ * @param {{mdastNode: string, htmlNode: string}} cfg
+ * @returns {FromMarkdownExtension}
+ */
+export function inlineFactoryFromMarkdown(cfg) {
+  /** @type {FromMarkdownExtension} */
+  const tmp = {
+    canContainEols: [cfg.mdastNode],
+    enter: {},
+    exit: {}
+  };
+  // @ts-ignore - FIXME: How to JSDoc cast as we know it is not undefined
+  tmp.enter[cfg.mdastNode] = enterInline;
+  // @ts-ignore - FIXME: How to JSDoc cast as we know it is not undefined
+  tmp.exit[cfg.mdastNode] = exitInline;
+  return tmp;
 
-handleDelete.peek = peekDelete
+  /** @type {FromMarkdownHandle} */
+  function enterInline(token) {
+    // @ts-ignore - FIXME: How to JSDoc extend typedef
+    this.enter({ type: cfg.mdastNode, children: [], data: { hName: cfg.htmlNode } }, token)
+  }
 
-/** @type {FromMarkdownHandle} */
-function enterStrikethrough(token) {
-  this.enter({type: 'delete', children: []}, token)
-}
-
-/** @type {FromMarkdownHandle} */
-function exitStrikethrough(token) {
-  this.exit(token)
+  /** @type {FromMarkdownHandle} */
+  function exitInline(token) {
+    this.exit(token)
+  }
 }
 
 /**
- * @type {ToMarkdownHandle}
- * @param {Delete} node
+ * Generate mdast node serialization extension for tag
+ * @param {{mdastNode: string, markdownSymbol: string}} cfg
+ * @returns {ToMarkdownExtension} 
  */
-function handleDelete(node, _, context, safeOptions) {
-  const tracker = track(safeOptions)
-  const exit = context.enter('emphasis')
-  let value = tracker.move('~~')
-  value += containerPhrasing(node, context, {
-    ...tracker.current(),
-    before: value,
-    after: '~'
-  })
-  value += tracker.move('~~')
-  exit()
-  return value
-}
+export function inlineFactoryToMarkdown(cfg) {
+  const tmp = {
+    unsafe: [{ character: cfg.markdownSymbol, inConstruct: 'phrasing' }],
+    handlers: {}
+  };
+  // @ts-ignore - FIXME: How to JSDoc cast as we know it is not undefined
+  tmp.handlers[cfg.mdastNode] = handleInline;
+  // @ts-ignore - FIXME: How to JSDoc cast as we know it is not undefined
+  tmp.handlers[cfg.mdastNode]['peek'] = peekInline;
+  return tmp;
 
-/** @type {ToMarkdownHandle} */
-function peekDelete() {
-  return '~'
+  /**
+   * @type {ToMarkdownHandle}
+   * @param {Inline} node
+   */
+  function handleInline(node, _, context, safeOptions) {
+    const tracker = track(safeOptions)
+    const exit = context.enter('phrasing')
+    let value = tracker.move(cfg.markdownSymbol)
+    value += containerPhrasing(node, context, {
+      ...tracker.current(),
+      before: value,
+      after: cfg.markdownSymbol[0]
+    })
+    value += tracker.move(cfg.markdownSymbol)
+    exit()
+    return value
+  }
+
+  /** @type {ToMarkdownHandle} */
+  function peekInline() {
+    return cfg.markdownSymbol[0]
+  }
 }
