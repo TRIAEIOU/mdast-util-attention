@@ -1,5 +1,2 @@
 // Note: extra types in `index.d.ts`.
-export {
-  gfmStrikethroughFromMarkdown,
-  gfmStrikethroughToMarkdown
-} from './lib/index.js'
+export {attentionFromMarkdown, attentionToMarkdown} from './lib/index.js'
