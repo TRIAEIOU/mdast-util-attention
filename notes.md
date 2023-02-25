@@ -7,3 +7,5 @@
 - Rename test.js .test.js
 - Run task `npm prepack`
 - Push
+
+Note that the shipped `npm prepack` overwrites custom annotations in the .d.ts files and the eslint errors on import types. Also an .eslintrc had to be added to fix spurious errors in the source.

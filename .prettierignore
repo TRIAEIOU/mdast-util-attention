@@ -1,2 +1,4 @@
 coverage/
 *.md
+./index.js
+./index.d.ts

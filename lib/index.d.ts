@@ -4,7 +4,7 @@
  * @param {Options} options
  *   MDAST and HAST node names
  * @returns {FromMarkdownExtension}
- *   Syntax extension for micromark (passed in `extensions`).
+ *   Syntax extension for micromark (passed in `mdastExtensions`).
  */
 export function attentionFromMarkdown(options: Options): FromMarkdownExtension
 /**

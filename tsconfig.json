@@ -1,6 +1,6 @@
 {
-  "include": ["**/*.js", "index.d.ts"],
-  "exclude": ["coverage/", "node_modules/"],
+  "include": ["**/*.js"],
+  "exclude": ["coverage/", "node_modules/", "index.js"],
   "compilerOptions": {
     "checkJs": true,
     "declaration": true,
