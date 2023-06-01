@@ -44,7 +44,6 @@
     "micromark-util-types": "^1.0.2"
   },
   "devDependencies": {
-    "@types/hast": "^2.3.4",
     "@types/node": "^20.0.0",
     "c8": "^7.0.0",
     "hast-util-to-mdast": "^9.0.0",
